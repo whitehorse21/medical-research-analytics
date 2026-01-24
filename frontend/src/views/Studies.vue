@@ -287,12 +287,16 @@ onMounted(loadStudies);
 .studies-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .page-content {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .page-header {
@@ -300,6 +304,8 @@ onMounted(loadStudies);
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .page-header h1 {
@@ -307,6 +313,7 @@ onMounted(loadStudies);
   color: #1a202c;
   font-size: 2rem;
   font-weight: 700;
+  word-wrap: break-word;
 }
 
 .subtitle {
@@ -385,8 +392,9 @@ onMounted(loadStudies);
 
 .studies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+  width: 100%;
 }
 
 .study-card {
@@ -395,6 +403,9 @@ onMounted(loadStudies);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .study-card:hover {
@@ -409,12 +420,21 @@ onMounted(loadStudies);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.card-title-section {
+  flex: 1;
+  min-width: 0;
 }
 
 .card-title-section h3 {
   margin: 0 0 0.75rem 0;
   font-size: 1.25rem;
   font-weight: 600;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .status-badge {
@@ -703,13 +723,40 @@ form {
   background: #cbd5e0;
 }
 
+@media (max-width: 1200px) {
+  .page-content {
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .page-content {
     padding: 1.5rem;
   }
 
+  .page-header {
+    gap: 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
   .studies-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card-header {
+    padding: 1.25rem;
+  }
+
+  .card-body {
+    padding: 1.25rem;
   }
 }
 
@@ -722,15 +769,22 @@ form {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
+    margin-bottom: 1.5rem;
   }
 
   .page-header h1 {
     font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
   }
 
   .btn-primary {
     width: 100%;
     justify-content: center;
+    min-height: 44px; /* Touch-friendly */
   }
 
   .studies-grid {
@@ -740,32 +794,85 @@ form {
 
   .study-card {
     margin: 0;
+    width: 100%;
   }
 
   .card-header {
     padding: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .card-title-section {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .card-actions {
+    flex-shrink: 0;
   }
 
   .card-body {
     padding: 1rem;
+    padding-top: 20px !important;
+  }
+
+  .card-info {
+    margin-top: 0;
+  }
+
+  .card-title-section h3 {
+    font-size: 1.125rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 44px; /* Touch-friendly */
+    font-size: 16px; /* Prevents zoom on iOS */
+    box-sizing: border-box;
   }
 
   .modal-content {
     width: 95%;
     max-width: none;
     margin: 1rem;
+    max-height: 90vh;
   }
 
   .modal-header {
     padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
   }
 
   form {
     padding: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    min-height: 44px;
   }
 }
 
@@ -774,25 +881,69 @@ form {
     padding: 0.75rem;
   }
 
+  .page-header {
+    margin-bottom: 1rem;
+  }
+
   .page-header h1 {
     font-size: 1.25rem;
+    line-height: 1.2;
   }
 
   .subtitle {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .card-header {
     flex-direction: column;
     gap: 0.75rem;
+    padding: 0.875rem;
   }
 
   .card-title-section {
     width: 100%;
+    min-width: 0;
+  }
+
+  .card-title-section h3 {
+    font-size: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .card-actions {
     align-self: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .card-dates {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .date-item {
+    width: 100%;
+  }
+
+  .icon-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .card-body {
+    padding: 0.875rem;
+    padding-top: 20px !important;
+  }
+
+  .card-info {
+    margin-top: 0;
+  }
+
+  .info-item {
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
   }
 
   .modal-content {
@@ -800,10 +951,33 @@ form {
     margin: 0;
     border-radius: 0;
     max-height: 100vh;
+    height: 100vh;
   }
 
   .modal-overlay {
     padding: 0;
+    align-items: flex-start;
+  }
+
+  .modal-header {
+    padding: 0.875rem;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  form {
+    padding: 0.875rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+
+  .empty-state h3 {
+    font-size: 1.25rem;
   }
 }
 </style>

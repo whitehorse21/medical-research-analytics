@@ -268,12 +268,16 @@ onMounted(loadStats);
 .dashboard {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .dashboard-content {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .dashboard-header {
@@ -281,6 +285,8 @@ onMounted(loadStats);
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .dashboard-header h1 {
@@ -288,6 +294,8 @@ onMounted(loadStats);
   color: #1a202c;
   font-size: 2.5rem;
   font-weight: 700;
+  word-wrap: break-word;
+  line-height: 1.2;
 }
 
 .subtitle {
@@ -464,6 +472,7 @@ onMounted(loadStats);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
+  width: 100%;
 }
 
 .stat-title {
@@ -749,17 +758,33 @@ onMounted(loadStats);
   font-size: 0.75rem;
 }
 
+@media (max-width: 1200px) {
+  .dashboard-content {
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .dashboard-content {
     padding: 1.5rem;
   }
 
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
   .metrics-row {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 
   .stats-grid-2 {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -772,15 +797,22 @@ onMounted(loadStats);
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .dashboard-header h1 {
     font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
   }
 
   .refresh-btn {
     width: 100%;
     justify-content: center;
+    min-height: 44px;
   }
 
   .metrics-row {
@@ -790,21 +822,50 @@ onMounted(loadStats);
 
   .metric-card {
     padding: 1.5rem;
+    width: 100%;
+  }
+
+  .metric-value {
+    font-size: 2.5rem;
   }
 
   .analytics-card {
     padding: 1.5rem;
+    width: 100%;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+    padding-top: 20px !important;
   }
 
   .card-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .card-header h2 {
+    font-size: 1.25rem;
+    word-wrap: break-word;
   }
 
   .status-list,
-  .demographics-list {
+  .demographics-list,
+  .gender-distribution,
+  .age-groups {
     gap: 0.75rem;
+    padding-top: 20px;
+  }
+
+  .status-item,
+  .demographic-item {
+    padding: 0.75rem;
+  }
+
+  .stat-section {
+    padding: 1rem 0;
   }
 }
 
@@ -813,28 +874,79 @@ onMounted(loadStats);
     padding: 0.75rem;
   }
 
+  .dashboard-header {
+    margin-bottom: 1rem;
+  }
+
   .dashboard-header h1 {
     font-size: 1.25rem;
+    line-height: 1.2;
   }
 
   .subtitle {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .metric-card {
     padding: 1rem;
   }
 
+  .metric-icon {
+    font-size: 2rem;
+  }
+
   .metric-value {
     font-size: 2rem;
+  }
+
+  .metric-label {
+    font-size: 0.875rem;
+  }
+
+  .metric-change {
+    font-size: 0.8rem;
   }
 
   .analytics-card {
     padding: 1rem;
   }
 
+  .card-body {
+    padding: 1rem;
+    padding-top: 20px !important;
+  }
+
   .card-header h2 {
     font-size: 1.125rem;
+  }
+
+  .stat-title {
+    font-size: 0.875rem;
+  }
+
+  .status-name,
+  .demographic-label {
+    font-size: 0.875rem;
+  }
+
+  .status-count,
+  .demographic-count {
+    font-size: 0.875rem;
+  }
+
+  .journal-name {
+    font-size: 0.8rem;
+  }
+
+  .journal-count {
+    font-size: 0.75rem;
+  }
+
+  .status-list,
+  .demographics-list,
+  .gender-distribution,
+  .age-groups {
+    padding-top: 20px;
   }
 }
 </style>

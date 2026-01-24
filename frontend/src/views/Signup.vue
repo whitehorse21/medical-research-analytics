@@ -101,6 +101,9 @@ const handleSignup = async () => {
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .back-button {
@@ -123,7 +126,9 @@ const handleSignup = async () => {
   z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  width: auto;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .back-button::before {
@@ -244,9 +249,11 @@ const handleSignup = async () => {
   input {
     font-size: 16px; /* Prevents zoom on iOS */
   }
+
 }
 
 .signup-card {
+  margin-top: 20px;
   background: white;
   padding: 2rem;
   border-radius: 10px;
