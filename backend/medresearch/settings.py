@@ -134,14 +134,15 @@ if os.getenv('FRONTEND_URL'):
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
+        "core.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",  # Keep for admin/fallback
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
-    # Disable CSRF for API views (handled by CORS and authentication)
+    # Disable CSRF for API views (handled by token authentication)
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],

@@ -6,8 +6,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from .models import Token
 
-# Exempt CSRF for API views since we're using session auth with CORS
+# Exempt CSRF for API views since we're using token auth
 csrf_exempt_decorator = method_decorator(csrf_exempt, name='dispatch')
 
 
@@ -78,9 +79,11 @@ def login_view(request):
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
-        login(request, user)
+        # Generate token for the user
+        token_key = Token.generate_token(user)
         return Response({
             'message': 'Login successful',
+            'token': token_key,
             'user': {
                 'id': user.id,
                 'username': user.username,
@@ -99,6 +102,8 @@ def login_view(request):
 @permission_classes([IsAuthenticated])
 def logout_view(request):
     """User logout endpoint"""
+    # Delete the token
+    Token.objects.filter(user=request.user).delete()
     logout(request)
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 

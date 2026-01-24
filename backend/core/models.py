@@ -1,4 +1,28 @@
 from django.db import models
+from django.contrib.auth.models import User
+import secrets
+
+
+class Token(models.Model):
+    """Simple token model for API authentication"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='api_token')
+    key = models.CharField(max_length=64, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def generate_token(cls, user):
+        """Generate a new token for a user"""
+        # Delete existing token if any
+        cls.objects.filter(user=user).delete()
+        # Generate new token
+        token = cls.objects.create(
+            user=user,
+            key=secrets.token_urlsafe(48)
+        )
+        return token.key
+
+    def __str__(self):
+        return f"Token for {self.user.username}"
 
 
 class Study(models.Model):

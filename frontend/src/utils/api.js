@@ -20,12 +20,22 @@ const getApiBase = () => {
 const apiBase = getApiBase();
 
 export const fetchJson = async (url, options = {}) => {
+  // Get token from localStorage
+  const token = localStorage.getItem('token');
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  // Add token to Authorization header if available
+  if (token) {
+    headers['Authorization'] = `Token ${token}`;
+  }
+
   const response = await fetch(`${apiBase}${url}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    credentials: 'include', // Include cookies for session auth
+    headers,
+    credentials: 'include', // Keep for CORS
     ...options,
   });
 
@@ -75,6 +85,9 @@ export const auth = {
     if (data.user) {
       localStorage.setItem('user', JSON.stringify(data.user));
     }
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+    }
     return data;
   },
 
@@ -95,6 +108,7 @@ export const auth = {
       // Ignore errors on logout
     }
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   },
 
   async getUserInfo() {
@@ -102,7 +116,7 @@ export const auth = {
   },
 
   isAuthenticated() {
-    return !!localStorage.getItem('user');
+    return !!(localStorage.getItem('user') && localStorage.getItem('token'));
   },
 
   getCurrentUser() {
