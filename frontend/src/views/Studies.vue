@@ -703,18 +703,107 @@ form {
   background: #cbd5e0;
 }
 
+@media (max-width: 1024px) {
+  .page-content {
+    padding: 1.5rem;
+  }
+
+  .studies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
+  .page-content {
+    padding: 1rem;
+  }
+
   .page-header {
     flex-direction: column;
     gap: 1rem;
+    align-items: stretch;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
   }
 
   .studies-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .study-card {
+    margin: 0;
+  }
+
+  .card-header {
+    padding: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  form {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    padding: 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .card-title-section {
+    width: 100%;
+  }
+
+  .card-actions {
+    align-self: flex-end;
+  }
+
+  .modal-content {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    max-height: 100vh;
+  }
+
+  .modal-overlay {
+    padding: 0;
   }
 }
 </style>

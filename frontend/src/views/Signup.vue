@@ -171,20 +171,78 @@ const handleSignup = async () => {
   letter-spacing: 0.3px;
 }
 
+@media (max-width: 1024px) {
+  .signup-card {
+    max-width: 450px;
+  }
+}
+
 @media (max-width: 768px) {
+  .signup-container {
+    padding: 1rem;
+  }
+
   .back-button {
-    top: 1.5rem;
-    left: 1.5rem;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.9rem;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
   }
 
   .back-icon {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 
   .back-text {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+  }
+
+  .signup-card {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  h1 {
+    font-size: 1.375rem;
+  }
+
+  h2 {
+    font-size: 1.125rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-container {
+    padding: 0.75rem;
+    align-items: flex-start;
+    padding-top: 4rem;
+  }
+
+  .back-button {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .signup-card {
+    padding: 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  input {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 

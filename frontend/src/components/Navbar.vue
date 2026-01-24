@@ -11,7 +11,13 @@
         </router-link>
       </div>
       
-      <div class="nav-menu">
+      <button @click="toggleMobileMenu" class="mobile-menu-btn" :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'">
+        <span class="hamburger-line" :class="{ open: mobileMenuOpen }"></span>
+        <span class="hamburger-line" :class="{ open: mobileMenuOpen }"></span>
+        <span class="hamburger-line" :class="{ open: mobileMenuOpen }"></span>
+      </button>
+
+      <div class="nav-menu" :class="{ 'mobile-open': mobileMenuOpen }" @click="closeMobileMenu">
         <router-link to="/dashboard" class="nav-link" active-class="active">
           <span class="nav-icon">📊</span>
           <span class="nav-text">Dashboard</span>
@@ -30,7 +36,7 @@
         </router-link>
       </div>
 
-      <div class="nav-user">
+      <div class="nav-user" :class="{ 'mobile-open': mobileMenuOpen }">
         <div class="user-profile">
           <div class="user-avatar">
             <span>{{ getUserInitials() }}</span>
@@ -50,12 +56,13 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../utils/api";
 
 const router = useRouter();
 const currentUser = computed(() => auth.getCurrentUser());
+const mobileMenuOpen = ref(false);
 
 const getUserInitials = () => {
   if (!currentUser.value?.username) return "U";
@@ -65,6 +72,14 @@ const getUserInitials = () => {
     .join("")
     .toUpperCase()
     .substring(0, 2);
+};
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+};
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
 };
 
 const handleLogout = async () => {
@@ -282,6 +297,42 @@ const handleLogout = async () => {
   font-size: 0.875rem;
 }
 
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+  gap: 4px;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger-line.open:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
 /* Mobile Responsive */
 @media (max-width: 1024px) {
   .nav-container {
@@ -319,6 +370,11 @@ const handleLogout = async () => {
   .nav-container {
     padding: 0 1rem;
     height: 60px;
+    position: relative;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
   }
 
   .brand-name {
@@ -330,26 +386,93 @@ const handleLogout = async () => {
   }
 
   .nav-menu {
-    gap: 0.25rem;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.5rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+
+  .nav-menu.mobile-open {
+    transform: translateX(0);
   }
 
   .nav-link {
-    padding: 0.5rem;
+    padding: 1rem;
+    justify-content: flex-start;
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .nav-text {
+    display: inline;
+  }
+
+  .nav-user {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .nav-user.mobile-open {
+    transform: translateY(0);
   }
 
   .user-profile {
-    padding: 0.375rem 0.75rem;
-    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
   }
 
-  .user-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.75rem;
+  .user-info {
+    display: flex;
   }
 
   .logout-btn {
-    padding: 0.5rem 0.75rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .logout-text {
+    display: inline;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-name {
+    font-size: 0.875rem;
+  }
+
+  .brand-icon {
+    font-size: 1.25rem;
+  }
+
+  .nav-container {
+    height: 56px;
+  }
+
+  .nav-menu {
+    top: 56px;
   }
 }
 
