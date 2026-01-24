@@ -12,6 +12,9 @@ DEBUG = True
  
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".vercel.app", ".now.sh", ".ondigitalocean.app"]
 
+# Detect if we're in production (Vercel)
+IS_PRODUCTION = os.getenv('VERCEL') or any(host in str(os.getenv('ALLOWED_HOSTS', '')) for host in ['.vercel.app', '.now.sh'])
+
 # CSRF Configuration
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
@@ -19,9 +22,15 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5174",
     "http://localhost:3000",
+    "https://medical-research-analytics-ntqn.vercel.app",  # Add your Vercel frontend URL
 ]
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+# Add any additional Vercel URLs from environment
+if os.getenv('FRONTEND_URL'):
+    CSRF_TRUSTED_ORIGINS.append(os.getenv('FRONTEND_URL'))
+
+CSRF_COOKIE_SECURE = IS_PRODUCTION  # True for HTTPS in production
 CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'None' if IS_PRODUCTION else 'Lax'  # None for cross-origin cookies
 CSRF_USE_SESSIONS = False
 
 INSTALLED_APPS = [
@@ -108,10 +117,20 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://127.0.0.1:5173',
     'http://127.0.0.1:5174',
-
+    'https://medical-research-analytics-ntqn.vercel.app',  # Add your Vercel frontend URL
 ]
+# Add any additional Vercel URLs from environment
+if os.getenv('FRONTEND_URL'):
+    CORS_ORIGIN_WHITELIST.append(os.getenv('FRONTEND_URL'))
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", 'http://127.0.0.1:5173', 'http://127.0.0.1:5174']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", 
+    'http://127.0.0.1:5173', 
+    'http://127.0.0.1:5174',
+    'https://medical-research-analytics-ntqn.vercel.app',  # Add your Vercel frontend URL
+]
+if os.getenv('FRONTEND_URL'):
+    CORS_ALLOWED_ORIGINS.append(os.getenv('FRONTEND_URL'))
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -131,5 +150,11 @@ REST_FRAMEWORK = {
 # Exempt API views from CSRF
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
+
+# Session cookie configuration for cross-origin requests
+SESSION_COOKIE_SECURE = IS_PRODUCTION  # True for HTTPS in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'None' if IS_PRODUCTION else 'Lax'  # None for cross-origin cookies
+SESSION_COOKIE_AGE = 86400  # 24 hours
 
 
