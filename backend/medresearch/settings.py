@@ -84,14 +84,7 @@ LOGGING = {
 }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('PG_DB_NAME'),
-        'USER': os.environ.get('PG_DB_USER'),
-        'PASSWORD': os.environ.get('PG_DB_PASSWORD'),
-        'HOST': os.environ.get('PG_DB_HOST'),
-        'PORT':  os.environ.get('PG_DB_PORT'),
-    }
+  "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
 
 AUTH_PASSWORD_VALIDATORS = []
