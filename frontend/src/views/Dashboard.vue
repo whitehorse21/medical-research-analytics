@@ -837,17 +837,4 @@ onMounted(loadStats);
     font-size: 1.125rem;
   }
 }
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .metrics-row {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid-2 {
-    grid-template-columns: 1fr;
-  }
-}
 </style>
