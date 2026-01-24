@@ -696,17 +696,4 @@ form {
     max-height: 100vh;
   }
 }
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .participants-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-}
 </style>
