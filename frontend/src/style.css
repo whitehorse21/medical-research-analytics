@@ -1,12 +1,14 @@
-* {
-  box-sizing: border-box;
-}
+@import "tailwindcss";
 
-body {
-  margin: 0;
-  font-family: "Segoe UI", "Inter", sans-serif;
-  background: #f6f8fb;
-  color: #1f2a44;
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 font-sans bg-gray-50 text-gray-900 overflow-x-hidden w-full;
+    font-family: "Segoe UI", "Inter", sans-serif;
+  }
 }
 
 .page {

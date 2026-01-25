@@ -1,116 +1,126 @@
 <template>
-  <div class="dashboard">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-200 overflow-x-hidden w-full">
     <Navbar />
-    <div class="dashboard-content">
-      <div class="dashboard-header">
+    <div class="max-w-[1400px] mx-auto px-8 py-8 w-full box-border xl:px-6 md:px-4 md:py-4 sm:px-3">
+      <div class="mt-40 md:mt-0 flex justify-between items-center mb-8 gap-4 flex-col md:flex-row md:gap-4 md:mb-6 sm:mb-4">
         <div>
-          <h1>Research Analytics Dashboard</h1>
-          <p class="subtitle">Comprehensive overview of your medical research platform</p>
+          <h1 class="m-0 mb-2 text-gray-900 text-4xl font-bold break-words leading-tight md:text-3xl md:leading-snug sm:leading-snug">Research Analytics Dashboard</h1>
+          <p class="text-gray-600 text-lg m-0 md:text-base ">Comprehensive overview of your medical research platform</p>
         </div>
-        <button @click="loadStats" class="refresh-btn" :disabled="loading">
+        <button 
+          @click="loadStats" 
+          :disabled="loading"
+          class="bg-white border-2 border-indigo-500 text-indigo-500 w-full md:w-60 px-6 py-3 rounded-lg cursor-pointer text-base font-semibold transition-all hover:bg-indigo-500 hover:text-white disabled:opacity-60 disabled:cursor-not-allowed md:justify-center md:min-h-[44px]"
+        >
           <span v-if="!loading">↻ Refresh</span>
           <span v-else>Loading...</span>
         </button>
       </div>
 
-      <div v-if="loading" class="loading-container">
-        <div class="spinner"></div>
+      <div v-if="loading" class="text-center py-16 px-8 bg-white rounded-xl shadow-md">
+        <div class="border-4 border-gray-200 border-t-indigo-500 rounded-full w-12 h-12 animate-spin mx-auto mb-4"></div>
         <p>Loading analytics...</p>
       </div>
-      <div v-if="error" class="error-banner">{{ error }}</div>
+      <div v-if="error" class="bg-red-100 text-red-700 p-4 rounded-lg mb-8 text-center font-medium">{{ error }}</div>
       
-      <div v-if="!loading && !error" class="dashboard-grid">
+      <div v-if="!loading && !error" class="flex flex-col gap-6">
         <!-- Key Metrics Row -->
-        <div class="metrics-row">
-          <div class="metric-card primary">
-            <div class="metric-icon">📊</div>
-            <div class="metric-content">
-              <div class="metric-label">Total Studies</div>
-              <div class="metric-value">{{ studyStats.total_studies || 0 }}</div>
-              <div class="metric-change">
-                <span class="change-positive">+{{ studyStats.recent_studies || 0 }}</span>
-                <span class="change-label">new this month</span>
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 md:grid-cols-2 md:gap-5 sm:grid-cols-1 sm:gap-4">
+          <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-lg border-l-4 border-indigo-500">
+            <div class="text-4xl">📊</div>
+            <div class="flex-1">
+              <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Total Studies</div>
+              <div class="text-gray-900 text-3xl font-bold my-2 sm:text-2xl">{{ studyStats.total_studies || 0 }}</div>
+              <div class="flex items-center gap-2 text-sm">
+                <span class="text-green-600 font-semibold">+{{ studyStats.recent_studies || 0 }}</span>
+                <span class="text-gray-400">new this month</span>
               </div>
             </div>
           </div>
 
-          <div class="metric-card success">
-            <div class="metric-icon">👥</div>
-            <div class="metric-content">
-              <div class="metric-label">Total Participants</div>
-              <div class="metric-value">{{ participantStats.total_participants || 0 }}</div>
-              <div class="metric-change">
-                <span class="change-positive">+{{ participantStats.recent_enrollments || 0 }}</span>
-                <span class="change-label">enrolled this month</span>
+          <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-lg border-l-4 border-green-500">
+            <div class="text-4xl">👥</div>
+            <div class="flex-1">
+              <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Total Participants</div>
+              <div class="text-gray-900 text-3xl font-bold my-2 sm:text-2xl">{{ participantStats.total_participants || 0 }}</div>
+              <div class="flex items-center gap-2 text-sm">
+                <span class="text-green-600 font-semibold">+{{ participantStats.recent_enrollments || 0 }}</span>
+                <span class="text-gray-400">enrolled this month</span>
               </div>
             </div>
           </div>
 
-          <div class="metric-card info">
-            <div class="metric-icon">📚</div>
-            <div class="metric-content">
-              <div class="metric-label">Literature Articles</div>
-              <div class="metric-value">{{ literatureStats.total_articles || 0 }}</div>
-              <div class="metric-change">
-                <span class="change-positive">+{{ literatureStats.recent_articles || 0 }}</span>
-                <span class="change-label">added this month</span>
+          <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-lg border-l-4 border-blue-500">
+            <div class="text-4xl">📚</div>
+            <div class="flex-1">
+              <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Literature Articles</div>
+              <div class="text-gray-900 text-3xl font-bold my-2 sm:text-2xl">{{ literatureStats.total_articles || 0 }}</div>
+              <div class="flex items-center gap-2 text-sm">
+                <span class="text-green-600 font-semibold">+{{ literatureStats.recent_articles || 0 }}</span>
+                <span class="text-gray-400">added this month</span>
               </div>
             </div>
           </div>
 
-          <div class="metric-card warning">
-            <div class="metric-icon">✅</div>
-            <div class="metric-content">
-              <div class="metric-label">Completion Rate</div>
-              <div class="metric-value">{{ studyStats.completion_rate || 0 }}%</div>
-              <div class="metric-change">
+          <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-lg border-l-4 border-orange-500">
+            <div class="text-4xl">✅</div>
+            <div class="flex-1">
+              <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Completion Rate</div>
+              <div class="text-gray-900 text-3xl font-bold my-2 sm:text-2xl">{{ studyStats.completion_rate || 0 }}%</div>
+              <div class="flex items-center gap-2 text-sm">
                 <span>{{ studyStats.completed_studies || 0 }} of {{ studyStats.total_studies || 0 }}</span>
-                <span class="change-label">studies completed</span>
+                <span class="text-gray-400">studies completed</span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Studies Analytics -->
-        <div class="analytics-card">
-          <div class="card-header">
-            <h2>Studies Overview</h2>
-            <router-link to="/studies" class="view-all-link">View All →</router-link>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <div class="flex justify-between items-center p-6 border-b border-gray-200 md:flex-col md:items-start md:gap-4 md:flex-wrap">
+            <h2 class="m-0 text-gray-900 text-2xl font-semibold md:text-xl sm:text-lg break-words">Studies Overview</h2>
+            <router-link to="/studies" class="text-indigo-500 no-underline font-medium transition-colors hover:text-indigo-600">View All →</router-link>
           </div>
-          <div class="card-body">
-            <div class="stats-grid-2">
-              <div class="stat-section">
-                <div class="stat-title">Status Distribution</div>
-                <div class="status-list">
-                  <div v-for="(count, status) in studyStats.by_status" :key="status" class="status-item">
-                    <div class="status-info">
-                      <span class="status-name">{{ status.charAt(0).toUpperCase() + status.slice(1) }}</span>
-                      <span class="status-count">{{ count }}</span>
+          <div class="p-6 md:p-6 sm:p-4 pt-5">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8 w-full lg:grid-cols-1 lg:gap-6">
+              <div class="md:pb-4">
+                <div class="text-gray-700 text-base font-semibold mb-4 uppercase tracking-wide sm:text-sm">Status Distribution</div>
+                <div class="flex flex-col gap-4 pt-5 md:pt-5 sm:pt-5">
+                  <div v-for="(count, status) in studyStats.by_status" :key="status" class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-700 font-medium capitalize">{{ status.charAt(0).toUpperCase() + status.slice(1) }}</span>
+                      <span class="text-gray-900 font-semibold">{{ count }}</span>
                     </div>
-                    <div class="progress-bar">
+                    <div class="h-2 bg-gray-200 rounded overflow-hidden">
                       <div 
-                        class="progress-fill" 
-                        :class="`status-${status}`"
+                        class="h-full rounded transition-all duration-300"
+                        :class="{
+                          'bg-amber-400': status === 'planning',
+                          'bg-blue-500': status === 'recruiting',
+                          'bg-green-500': status === 'active',
+                          'bg-indigo-500': status === 'completed',
+                          'bg-red-500': status === 'cancelled'
+                        }"
                         :style="{ width: `${(count / (studyStats.total_studies || 1)) * 100}%` }"
                       ></div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="stat-section">
-                <div class="stat-title">Key Metrics</div>
-                <div class="metric-list">
-                  <div class="metric-item">
-                    <span class="metric-name">Active Studies</span>
-                    <span class="metric-number highlight">{{ studyStats.active_studies || 0 }}</span>
+              <div class="md:pb-4">
+                <div class="text-gray-700 text-base font-semibold mb-4 uppercase tracking-wide sm:text-sm">Key Metrics</div>
+                <div class="flex flex-col gap-4">
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Active Studies</span>
+                    <span class="text-indigo-500 font-semibold text-xl">{{ studyStats.active_studies || 0 }}</span>
                   </div>
-                  <div class="metric-item">
-                    <span class="metric-name">Ongoing Studies</span>
-                    <span class="metric-number">{{ studyStats.ongoing_studies || 0 }}</span>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Ongoing Studies</span>
+                    <span class="text-gray-900 font-semibold text-lg">{{ studyStats.ongoing_studies || 0 }}</span>
                   </div>
-                  <div class="metric-item">
-                    <span class="metric-name">Studies with Dates</span>
-                    <span class="metric-number">{{ studyStats.studies_with_dates || 0 }}</span>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Studies with Dates</span>
+                    <span class="text-gray-900 font-semibold text-lg">{{ studyStats.studies_with_dates || 0 }}</span>
                   </div>
                 </div>
               </div>
@@ -119,55 +129,55 @@
         </div>
 
         <!-- Participants Analytics -->
-        <div class="analytics-card">
-          <div class="card-header">
-            <h2>Participants Analytics</h2>
-            <router-link to="/participants" class="view-all-link">View All →</router-link>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <div class="flex justify-between items-center p-6 border-b border-gray-200 md:flex-col md:items-start md:gap-4 md:flex-wrap">
+            <h2 class="m-0 text-gray-900 text-2xl font-semibold md:text-xl sm:text-lg break-words">Participants Analytics</h2>
+            <router-link to="/participants" class="text-indigo-500 no-underline font-medium transition-colors hover:text-indigo-600">View All →</router-link>
           </div>
-          <div class="card-body">
-            <div class="stats-grid-2">
-              <div class="stat-section">
-                <div class="stat-title">Demographics</div>
-                <div class="demographic-stats">
-                  <div class="demo-item">
-                    <span class="demo-label">Average Age</span>
-                    <span class="demo-value">{{ participantStats.average_age || 0 }} years</span>
+          <div class="p-6 md:p-6 sm:p-4 pt-5">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8 w-full lg:grid-cols-1 lg:gap-6">
+              <div class="md:pb-4">
+                <div class="text-gray-700 text-base font-semibold mb-4 uppercase tracking-wide sm:text-sm">Demographics</div>
+                <div class="flex flex-col gap-4 mb-6">
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Average Age</span>
+                    <span class="text-gray-900 font-semibold">{{ participantStats.average_age || 0 }} years</span>
                   </div>
-                  <div class="demo-item">
-                    <span class="demo-label">Age Range</span>
-                    <span class="demo-value">{{ participantStats.min_age || 0 }} - {{ participantStats.max_age || 0 }} years</span>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Age Range</span>
+                    <span class="text-gray-900 font-semibold">{{ participantStats.min_age || 0 }} - {{ participantStats.max_age || 0 }} years</span>
                   </div>
-                  <div class="demo-item">
-                    <span class="demo-label">Avg per Study</span>
-                    <span class="demo-value">{{ participantStats.average_per_study || 0 }}</span>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Avg per Study</span>
+                    <span class="text-gray-900 font-semibold">{{ participantStats.average_per_study || 0 }}</span>
                   </div>
                 </div>
-                <div class="gender-distribution">
-                  <div v-for="(count, sex) in participantStats.by_sex" :key="sex" class="gender-item">
-                    <div class="gender-bar">
+                <div class="flex flex-col gap-3 pt-5 md:pt-5 sm:pt-5">
+                  <div v-for="(count, sex) in participantStats.by_sex" :key="sex" class="flex flex-col gap-2">
+                    <div class="h-6 bg-gray-200 rounded-xl overflow-hidden relative">
                       <div 
-                        class="gender-fill" 
+                        class="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl transition-all duration-300"
                         :style="{ width: `${(count / (participantStats.total_participants || 1)) * 100}%` }"
                       ></div>
                     </div>
-                    <div class="gender-info">
-                      <span class="gender-label">{{ sex }}</span>
-                      <span class="gender-count">{{ count }}</span>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-gray-700 font-medium">{{ sex }}</span>
+                      <span class="text-gray-900 font-semibold">{{ count }}</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="stat-section">
-                <div class="stat-title">Age Groups</div>
-                <div class="age-groups">
-                  <div v-for="(count, group) in participantStats.age_groups" :key="group" class="age-group-item">
-                    <div class="age-group-header">
-                      <span class="age-group-label">{{ group }} years</span>
-                      <span class="age-group-count">{{ count }}</span>
+              <div class="md:pb-4">
+                <div class="text-gray-700 text-base font-semibold mb-4 uppercase tracking-wide sm:text-sm">Age Groups</div>
+                <div class="flex flex-col gap-4 pt-5 md:pt-5 sm:pt-5">
+                  <div v-for="(count, group) in participantStats.age_groups" :key="group" class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-700 font-medium text-sm">{{ group }} years</span>
+                      <span class="text-gray-900 font-semibold">{{ count }}</span>
                     </div>
-                    <div class="progress-bar">
+                    <div class="h-2 bg-gray-200 rounded overflow-hidden">
                       <div 
-                        class="progress-fill age-fill"
+                        class="h-full bg-indigo-500 rounded transition-all duration-300"
                         :style="{ width: `${(count / (participantStats.total_participants || 1)) * 100}%` }"
                       ></div>
                     </div>
@@ -179,46 +189,46 @@
         </div>
 
         <!-- Literature Analytics -->
-        <div class="analytics-card">
-          <div class="card-header">
-            <h2>Literature Repository</h2>
-            <router-link to="/literature" class="view-all-link">View All →</router-link>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <div class="flex justify-between items-center p-6 border-b border-gray-200 md:flex-col md:items-start md:gap-4 md:flex-wrap">
+            <h2 class="m-0 text-gray-900 text-2xl font-semibold md:text-xl sm:text-lg break-words">Literature Repository</h2>
+            <router-link to="/literature" class="text-indigo-500 no-underline font-medium transition-colors hover:text-indigo-600">View All →</router-link>
           </div>
-          <div class="card-body">
-            <div class="stats-grid-2">
-              <div class="stat-section">
-                <div class="stat-title">Publication Trends</div>
-                <div class="trend-stats">
-                  <div class="trend-item">
-                    <span class="trend-label">Current Year ({{ new Date().getFullYear() }})</span>
-                    <span class="trend-value">{{ literatureStats.current_year_articles || 0 }}</span>
+          <div class="p-6 md:p-6 sm:p-4 pt-5">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8 w-full lg:grid-cols-1 lg:gap-6">
+              <div class="md:pb-4">
+                <div class="text-gray-700 text-base font-semibold mb-4 uppercase tracking-wide sm:text-sm">Publication Trends</div>
+                <div class="flex flex-col gap-4 mb-6">
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Current Year ({{ new Date().getFullYear() }})</span>
+                    <span class="text-gray-900 font-semibold text-lg">{{ literatureStats.current_year_articles || 0 }}</span>
                   </div>
-                  <div class="trend-item">
-                    <span class="trend-label">Last Year ({{ new Date().getFullYear() - 1 }})</span>
-                    <span class="trend-value">{{ literatureStats.last_year_articles || 0 }}</span>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">Last Year ({{ new Date().getFullYear() - 1 }})</span>
+                    <span class="text-gray-900 font-semibold text-lg">{{ literatureStats.last_year_articles || 0 }}</span>
                   </div>
-                  <div class="trend-item">
-                    <span class="trend-label">DOI Coverage</span>
-                    <span class="trend-value">{{ literatureStats.doi_coverage || 0 }}%</span>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="text-gray-600 text-sm">DOI Coverage</span>
+                    <span class="text-gray-900 font-semibold text-lg">{{ literatureStats.doi_coverage || 0 }}%</span>
                   </div>
                 </div>
-                <div v-if="literatureStats.year_range" class="year-range">
-                  <span class="range-label">Publication Range:</span>
-                  <span class="range-value">{{ literatureStats.year_range.min_year || 'N/A' }} - {{ literatureStats.year_range.max_year || 'N/A' }}</span>
+                <div v-if="literatureStats.year_range" class="p-4 bg-gray-100 rounded-lg text-center">
+                  <span class="text-gray-600 text-sm mr-2">Publication Range:</span>
+                  <span class="text-gray-900 font-semibold">{{ literatureStats.year_range.min_year || 'N/A' }} - {{ literatureStats.year_range.max_year || 'N/A' }}</span>
                 </div>
               </div>
-              <div class="stat-section">
-                <div class="stat-title">Top Journals</div>
-                <div class="journals-list">
+              <div class="md:pb-4">
+                <div class="text-gray-700 text-base font-semibold mb-4 uppercase tracking-wide sm:text-sm">Top Journals</div>
+                <div class="flex flex-col gap-3">
                   <div 
                     v-for="(journal, index) in (literatureStats.top_journals || []).slice(0, 5)" 
                     :key="index" 
-                    class="journal-item"
+                    class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg transition-colors hover:bg-gray-100"
                   >
-                    <div class="journal-rank">{{ index + 1 }}</div>
-                    <div class="journal-info">
-                      <span class="journal-name">{{ journal.journal }}</span>
-                      <span class="journal-count">{{ journal.count }} articles</span>
+                    <div class="w-8 h-8 bg-indigo-500 text-white rounded-full flex items-center justify-center font-semibold text-sm">{{ index + 1 }}</div>
+                    <div class="flex-1 flex flex-col gap-1">
+                      <span class="text-gray-900 font-medium text-sm">{{ journal.journal }}</span>
+                      <span class="text-gray-600 text-xs">{{ journal.count }} articles</span>
                     </div>
                   </div>
                 </div>
@@ -263,690 +273,3 @@ const loadStats = async () => {
 
 onMounted(loadStats);
 </script>
-
-<style scoped>
-.dashboard {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  overflow-x: hidden;
-  width: 100%;
-}
-
-.dashboard-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.dashboard-header h1 {
-  margin: 0 0 0.5rem 0;
-  color: #1a202c;
-  font-size: 2.5rem;
-  font-weight: 700;
-  word-wrap: break-word;
-  line-height: 1.2;
-}
-
-.subtitle {
-  color: #718096;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.refresh-btn {
-  background: white;
-  border: 2px solid #667eea;
-  color: #667eea;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.refresh-btn:hover:not(:disabled) {
-  background: #667eea;
-  color: white;
-}
-
-.refresh-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.loading-container {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.error-banner {
-  background: #fed7d7;
-  color: #c53030;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  text-align: center;
-  font-weight: 500;
-}
-
-.dashboard-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.metrics-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.metric-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.metric-card.primary { border-left: 4px solid #667eea; }
-.metric-card.success { border-left: 4px solid #48bb78; }
-.metric-card.info { border-left: 4px solid #4299e1; }
-.metric-card.warning { border-left: 4px solid #ed8936; }
-
-.metric-icon {
-  font-size: 2.5rem;
-}
-
-.metric-content {
-  flex: 1;
-}
-
-.metric-label {
-  color: #718096;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.metric-value {
-  color: #1a202c;
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
-}
-
-.metric-change {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.change-positive {
-  color: #48bb78;
-  font-weight: 600;
-}
-
-.change-label {
-  color: #a0aec0;
-}
-
-.analytics-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.card-header h2 {
-  margin: 0;
-  color: #1a202c;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.view-all-link {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.view-all-link:hover {
-  color: #5568d3;
-}
-
-.card-body {
-  padding: 1.5rem;
-}
-
-.stats-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  width: 100%;
-}
-
-.stat-title {
-  color: #4a5568;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.status-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.status-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.status-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status-name {
-  color: #4a5568;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.status-count {
-  color: #1a202c;
-  font-weight: 600;
-}
-
-.progress-bar {
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s;
-}
-
-.progress-fill.status-planning { background: #fbbf24; }
-.progress-fill.status-recruiting { background: #3b82f6; }
-.progress-fill.status-active { background: #10b981; }
-.progress-fill.status-completed { background: #6366f1; }
-.progress-fill.status-cancelled { background: #ef4444; }
-.progress-fill.age-fill { background: #667eea; }
-
-.metric-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.metric-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background: #f7fafc;
-  border-radius: 8px;
-}
-
-.metric-name {
-  color: #718096;
-  font-size: 0.875rem;
-}
-
-.metric-number {
-  color: #1a202c;
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-
-.metric-number.highlight {
-  color: #667eea;
-  font-size: 1.25rem;
-}
-
-.demographic-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.demo-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background: #f7fafc;
-  border-radius: 8px;
-}
-
-.demo-label {
-  color: #718096;
-  font-size: 0.875rem;
-}
-
-.demo-value {
-  color: #1a202c;
-  font-weight: 600;
-}
-
-.gender-distribution {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.gender-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.gender-bar {
-  height: 24px;
-  background: #e2e8f0;
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-}
-
-.gender-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  transition: width 0.3s;
-}
-
-.gender-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.875rem;
-}
-
-.gender-label {
-  color: #4a5568;
-  font-weight: 500;
-}
-
-.gender-count {
-  color: #1a202c;
-  font-weight: 600;
-}
-
-.age-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.age-group-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.age-group-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.age-group-label {
-  color: #4a5568;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.age-group-count {
-  color: #1a202c;
-  font-weight: 600;
-}
-
-.trend-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.trend-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background: #f7fafc;
-  border-radius: 8px;
-}
-
-.trend-label {
-  color: #718096;
-  font-size: 0.875rem;
-}
-
-.trend-value {
-  color: #1a202c;
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-
-.year-range {
-  padding: 1rem;
-  background: #edf2f7;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.range-label {
-  color: #718096;
-  font-size: 0.875rem;
-  margin-right: 0.5rem;
-}
-
-.range-value {
-  color: #1a202c;
-  font-weight: 600;
-}
-
-.journals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.journal-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: #f7fafc;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.journal-item:hover {
-  background: #edf2f7;
-}
-
-.journal-rank {
-  width: 32px;
-  height: 32px;
-  background: #667eea;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-
-.journal-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.journal-name {
-  color: #1a202c;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.journal-count {
-  color: #718096;
-  font-size: 0.75rem;
-}
-
-@media (max-width: 1200px) {
-  .dashboard-content {
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 1024px) {
-  .dashboard-content {
-    padding: 1.5rem;
-  }
-
-  .dashboard-header h1 {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .metrics-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-  }
-
-  .stats-grid-2 {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-content {
-    padding: 1rem;
-  }
-
-  .dashboard-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .dashboard-header h1 {
-    font-size: 1.5rem;
-    line-height: 1.3;
-  }
-
-  .subtitle {
-    font-size: 0.875rem;
-  }
-
-  .refresh-btn {
-    width: 100%;
-    justify-content: center;
-    min-height: 44px;
-  }
-
-  .metrics-row {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .metric-card {
-    padding: 1.5rem;
-    width: 100%;
-  }
-
-  .metric-value {
-    font-size: 2.5rem;
-  }
-
-  .analytics-card {
-    padding: 1.5rem;
-    width: 100%;
-  }
-
-  .card-body {
-    padding: 1.5rem;
-    padding-top: 20px !important;
-  }
-
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .card-header h2 {
-    font-size: 1.25rem;
-    word-wrap: break-word;
-  }
-
-  .status-list,
-  .demographics-list,
-  .gender-distribution,
-  .age-groups {
-    gap: 0.75rem;
-    padding-top: 20px;
-  }
-
-  .status-item,
-  .demographic-item {
-    padding: 0.75rem;
-  }
-
-  .stat-section {
-    padding: 1rem 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-content {
-    padding: 0.75rem;
-  }
-
-  .dashboard-header {
-    margin-bottom: 1rem;
-  }
-
-  .dashboard-header h1 {
-    font-size: 1.25rem;
-    line-height: 1.2;
-  }
-
-  .subtitle {
-    font-size: 0.8rem;
-  }
-
-  .metric-card {
-    padding: 1rem;
-  }
-
-  .metric-icon {
-    font-size: 2rem;
-  }
-
-  .metric-value {
-    font-size: 2rem;
-  }
-
-  .metric-label {
-    font-size: 0.875rem;
-  }
-
-  .metric-change {
-    font-size: 0.8rem;
-  }
-
-  .analytics-card {
-    padding: 1rem;
-  }
-
-  .card-body {
-    padding: 1rem;
-    padding-top: 20px !important;
-  }
-
-  .card-header h2 {
-    font-size: 1.125rem;
-  }
-
-  .stat-title {
-    font-size: 0.875rem;
-  }
-
-  .status-name,
-  .demographic-label {
-    font-size: 0.875rem;
-  }
-
-  .status-count,
-  .demographic-count {
-    font-size: 0.875rem;
-  }
-
-  .journal-name {
-    font-size: 0.8rem;
-  }
-
-  .journal-count {
-    font-size: 0.75rem;
-  }
-
-  .status-list,
-  .demographics-list,
-  .gender-distribution,
-  .age-groups {
-    padding-top: 20px;
-  }
-}
-</style>
