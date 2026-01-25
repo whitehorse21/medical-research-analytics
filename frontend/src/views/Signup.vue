@@ -1,14 +1,14 @@
 <template>
-  <div class="min-h-screen h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-600 dark:from-purple-900 dark:via-pink-900 dark:to-indigo-900 relative overflow-x-hidden w-full box-border p-4 md:p-4 sm:p-4 sm:py-8 transition-colors duration-200">
+  <div class="min-h-screen h-screen flex items-start sm:items-center justify-center bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-600 dark:from-purple-900 dark:via-pink-900 dark:to-indigo-900 relative overflow-x-hidden w-full box-border p-4 md:p-4 sm:p-4 sm:py-8 transition-colors duration-200">
     <button 
       @click="goBack" 
       class="absolute top-4 left-4 flex items-center gap-2 bg-white/15 dark:bg-white/10 text-white border-2 border-white/25 dark:border-white/20 px-4 py-2.5 rounded-xl cursor-pointer text-sm font-semibold transition-all duration-300 backdrop-blur-xl z-10 shadow-lg overflow-hidden hover:bg-white/25 dark:hover:bg-white/15 hover:border-white/40 dark:hover:border-white/30 hover:-translate-x-1 hover:shadow-xl active:scale-95 sm:top-3 sm:left-3 sm:px-3 sm:py-2 sm:text-xs"
       title="Go back"
     >
       <span class="text-xl leading-none relative z-[1] sm:text-base">←</span>
-      <span class="text-sm relative z-[1] tracking-wide sm:hidden">Back</span>
+      <span class="text-sm relative z-[1] tracking-wide hidden sm:block">Back</span>
     </button>
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl dark:shadow-gray-900/50 w-full max-w-[400px] lg:max-w-[450px] md:p-6 md:max-w-[90%] sm:p-6 sm:max-w-[95%] sm:rounded-3xl border-4 border-purple-200 dark:border-purple-800 relative overflow-hidden transition-colors duration-200">
+    <div class="mt-16 sm:mt-0 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl dark:shadow-gray-900/50 w-full max-w-[400px] lg:max-w-[450px] md:p-6 md:max-w-[90%] sm:p-6 sm:max-w-[95%] sm:rounded-3xl border-4 border-purple-200 dark:border-purple-800 relative overflow-hidden transition-colors duration-200">
       <!-- Decorative gradient overlay for Signup -->
       <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 dark:from-pink-600 dark:via-purple-600 dark:to-indigo-600"></div>
       <div class="relative">

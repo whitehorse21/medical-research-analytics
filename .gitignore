@@ -80,8 +80,6 @@ logs/
 *.log
 
 # Environment variables
-.env
-.env.local
 .env.*.local
 .env.development.local
 .env.test.local
@@ -90,7 +88,6 @@ backend/.env
 frontend/.env
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -196,3 +193,4 @@ out
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+config.bat

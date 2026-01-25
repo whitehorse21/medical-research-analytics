@@ -75,12 +75,12 @@
           <div 
             v-for="(feature, index) in features" 
             :key="index"
-            class="bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-sm dark:shadow-gray-900/50 transition-all duration-300 border border-gray-200 dark:border-gray-700 relative overflow-hidden hover:-translate-y-2 hover:shadow-xl dark:hover:shadow-gray-900 hover:border-indigo-500 dark:hover:border-indigo-400 feature-card"
+            class="group bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-sm dark:shadow-gray-900/50 transition-all duration-300 border border-gray-200 dark:border-gray-700 relative overflow-hidden hover:-translate-y-2 hover:shadow-xl dark:hover:shadow-gray-900 hover:border-indigo-500 dark:hover:border-indigo-400"
             :class="{ 'fade-in-up': featuresAnimated }"
             :style="`animation-delay: ${0.1 * index}s`"
           >
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600 scale-x-0 origin-left transition-transform duration-300 feature-card-top"></div>
-            <div class="text-5xl mb-6 block transition-transform duration-300 feature-icon">{{ feature.icon }}</div>
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600 scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></div>
+            <div class="text-5xl mb-6 block transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[5deg]">{{ feature.icon }}</div>
             <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ feature.title }}</h3>
             <p class="text-base text-gray-600 dark:text-gray-400 leading-relaxed">{{ feature.description }}</p>
           </div>
@@ -298,7 +298,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Animation keyframes */
+/* Custom keyframes - required for animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -383,23 +383,23 @@ onUnmounted(() => {
 
 /* Animation classes */
 .fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
   opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .fade-in-left {
-  animation: fadeInLeft 0.8s ease-out forwards;
   opacity: 0;
+  animation: fadeInLeft 0.8s ease-out forwards;
 }
 
 .fade-in-right {
-  animation: fadeInRight 0.8s ease-out forwards;
   opacity: 0;
+  animation: fadeInRight 0.8s ease-out forwards;
 }
 
 .fade-in {
-  animation: fadeIn 0.8s ease-out forwards;
   opacity: 0;
+  animation: fadeIn 0.8s ease-out forwards;
 }
 
 .count-up {
@@ -418,12 +418,7 @@ onUnmounted(() => {
   animation: movePattern 20s linear infinite;
 }
 
-/* Button hover effects */
-.btn-primary {
-  position: relative;
-  overflow: hidden;
-}
-
+/* Button ripple effect - requires pseudo-element (can't be done with Tailwind alone) */
 .btn-primary::before {
   content: '';
   position: absolute;
@@ -432,7 +427,7 @@ onUnmounted(() => {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(99, 102, 241, 0.2);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
 }
@@ -442,20 +437,7 @@ onUnmounted(() => {
   height: 300px;
 }
 
-.btn-primary:hover .btn-icon {
-  transform: translateX(4px);
-}
-
-/* Feature card hover effects */
-.feature-card:hover .feature-card-top {
-  transform: scaleX(1);
-}
-
-.feature-card:hover .feature-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-/* Footer link hover effects */
+/* Footer link arrow - requires pseudo-element with content (can't be done with Tailwind alone) */
 .footer-link::before {
   content: '→';
   position: absolute;
@@ -467,19 +449,5 @@ onUnmounted(() => {
 .footer-link:hover::before {
   opacity: 1;
   left: 0;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .hero-content {
-    text-align: center;
-  }
-}
-
-@media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
 }
 </style>
