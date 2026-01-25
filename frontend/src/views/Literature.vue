@@ -25,9 +25,72 @@
         <p>Loading articles...</p>
       </div>
 
-      <!-- Article Form Modal -->
-      <div v-if="showForm" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] backdrop-blur-sm sm:items-start sm:p-0" @click="closeForm">
-        <div class="bg-white rounded-2xl w-[90%] max-w-[600px] max-h-[90vh] overflow-y-auto shadow-2xl sm:w-full sm:max-w-none sm:rounded-none sm:max-h-screen sm:h-screen" @click.stop>
+      <!-- Articles Grid -->
+      <div v-if="!loading && articles.length > 0" class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6 w-full md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-5 sm:grid-cols-1 sm:gap-4">
+        <div v-for="article in articles" :key="article.id" class="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer w-full max-w-full box-border" @click="viewArticle(article)">
+          <div class="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white flex justify-between items-start flex-wrap gap-3 md:p-5 sm:p-4 sm:flex-col sm:gap-2">
+            <div class="flex-1 min-w-0">
+              <h3 class="m-0 mb-3 text-lg font-semibold leading-snug break-words overflow-wrap-anywhere sm:text-base sm:mb-2">{{ article.title }}</h3>
+              <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/30 text-white">
+                {{ article.year }}
+              </span>
+            </div>
+            <div class="flex gap-2 flex-shrink-0 sm:w-full sm:justify-end">
+              <button 
+                @click.stop="editArticle(article)" 
+                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
+                title="Edit"
+              >
+                ✏️
+              </button>
+              <button 
+                @click.stop="deleteArticle(article.id)" 
+                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
+                title="Delete"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+          <div class="p-6 md:p-5 sm:p-4 sm:pt-5">
+            <div class="mb-4 sm:mt-0">
+              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
+                <span class="text-gray-600 text-sm flex-shrink-0 mr-4">Authors:</span>
+                <span class="text-gray-900 font-semibold text-right break-words">{{ article.authors }}</span>
+              </div>
+              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
+                <span class="text-gray-600 text-sm flex-shrink-0 mr-4">Journal:</span>
+                <span class="text-blue-600 font-semibold text-right break-words">{{ article.journal }}</span>
+              </div>
+              <div v-if="article.doi" class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
+                <span class="text-gray-600 text-sm flex-shrink-0 mr-4">DOI:</span>
+                <span class="text-gray-900 font-semibold text-sm text-right break-words font-mono">{{ article.doi }}</span>
+              </div>
+            </div>
+            <div v-if="article.abstract" class="mt-4 pt-4 border-t border-gray-200">
+              <p class="text-gray-600 text-sm leading-relaxed m-0">{{ truncateText(article.abstract, 150) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!loading && articles.length === 0" class="text-center py-16 px-8 bg-white rounded-xl shadow-md sm:py-8 sm:px-4">
+        <div class="text-6xl mb-4 sm:text-5xl">📚</div>
+        <h3 class="m-0 mb-2 text-gray-900 text-2xl font-bold sm:text-xl">No Articles Yet</h3>
+        <p class="text-gray-600 m-0 mb-6">Start building your literature repository</p>
+        <button 
+          @click="showForm = true" 
+          class="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 px-7 py-3.5 rounded-lg cursor-pointer text-base font-semibold flex items-center gap-2 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl mx-auto"
+        >
+          Add First Article
+        </button>
+      </div>
+    </div>
+
+    <!-- Article Form Modal -->
+    <Teleport to="body">
+      <div v-if="showForm" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[2000] backdrop-blur-sm sm:p-0" @click="closeForm">
+        <div class="bg-white rounded-2xl w-[90%] max-w-[600px] max-h-[90vh] overflow-y-auto shadow-2xl" @click.stop>
           <div class="flex justify-between items-center p-6 border-b border-gray-200 sm:p-4 sm:sticky sm:top-0 sm:bg-white sm:z-10">
             <h2 class="m-0 text-gray-900 text-2xl font-bold sm:text-xl">{{ editingArticle ? '✏️ Edit Article' : '➕ Add Article' }}</h2>
             <button 
@@ -116,71 +179,12 @@
           </form>
         </div>
       </div>
+    </Teleport>
 
-      <!-- Articles Grid -->
-      <div v-if="!loading && articles.length > 0" class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6 w-full md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-5 sm:grid-cols-1 sm:gap-4">
-        <div v-for="article in articles" :key="article.id" class="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer w-full max-w-full box-border" @click="viewArticle(article)">
-          <div class="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white flex justify-between items-start flex-wrap gap-3 md:p-5 sm:p-4 sm:flex-col sm:gap-2">
-            <div class="flex-1 min-w-0">
-              <h3 class="m-0 mb-3 text-lg font-semibold leading-snug break-words overflow-wrap-anywhere sm:text-base sm:mb-2">{{ article.title }}</h3>
-              <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/30 text-white">
-                {{ article.year }}
-              </span>
-            </div>
-            <div class="flex gap-2 flex-shrink-0 sm:w-full sm:justify-end">
-              <button 
-                @click.stop="editArticle(article)" 
-                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
-                title="Edit"
-              >
-                ✏️
-              </button>
-              <button 
-                @click.stop="deleteArticle(article.id)" 
-                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
-                title="Delete"
-              >
-                🗑️
-              </button>
-            </div>
-          </div>
-          <div class="p-6 md:p-5 sm:p-4 sm:pt-5">
-            <div class="mb-4 sm:mt-0">
-              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
-                <span class="text-gray-600 text-sm flex-shrink-0 mr-4">Authors:</span>
-                <span class="text-gray-900 font-semibold text-right break-words">{{ article.authors }}</span>
-              </div>
-              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
-                <span class="text-gray-600 text-sm flex-shrink-0 mr-4">Journal:</span>
-                <span class="text-blue-600 font-semibold text-right break-words">{{ article.journal }}</span>
-              </div>
-              <div v-if="article.doi" class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
-                <span class="text-gray-600 text-sm flex-shrink-0 mr-4">DOI:</span>
-                <span class="text-gray-900 font-semibold text-sm text-right break-words font-mono">{{ article.doi }}</span>
-              </div>
-            </div>
-            <div v-if="article.abstract" class="mt-4 pt-4 border-t border-gray-200">
-              <p class="text-gray-600 text-sm leading-relaxed m-0">{{ truncateText(article.abstract, 150) }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="!loading && articles.length === 0" class="text-center py-16 px-8 bg-white rounded-xl shadow-md sm:py-8 sm:px-4">
-        <div class="text-6xl mb-4 sm:text-5xl">📚</div>
-        <h3 class="m-0 mb-2 text-gray-900 text-2xl font-bold sm:text-xl">No Articles Yet</h3>
-        <p class="text-gray-600 m-0 mb-6">Start building your literature repository</p>
-        <button 
-          @click="showForm = true" 
-          class="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 px-7 py-3.5 rounded-lg cursor-pointer text-base font-semibold flex items-center gap-2 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl mx-auto"
-        >
-          Add First Article
-        </button>
-      </div>
-
-      <!-- Article Detail Modal -->
-      <div v-if="viewingArticle" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] backdrop-blur-sm sm:items-start sm:p-0" @click="viewingArticle = null">
-        <div class="bg-white rounded-2xl w-[90%] max-w-[800px] max-h-[90vh] overflow-y-auto shadow-2xl sm:w-full sm:max-w-none sm:rounded-none sm:max-h-screen sm:h-screen" @click.stop>
+    <!-- Article Detail Modal -->
+    <Teleport to="body">
+      <div v-if="viewingArticle" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[1001] backdrop-blur-sm sm:items-start" @click="viewingArticle = null">
+        <div class="bg-white rounded-2xl w-[90%] max-w-[800px] max-h-[90vh] overflow-y-auto shadow-2xl" @click.stop>
           <div class="flex justify-between items-center p-6 border-b border-gray-200 sm:p-4 sm:sticky sm:top-0 sm:bg-white sm:z-10">
             <h2 class="m-0 text-gray-900 text-2xl font-bold sm:text-xl">{{ viewingArticle.title }}</h2>
             <button 
@@ -224,7 +228,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 

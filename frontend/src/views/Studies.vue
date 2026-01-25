@@ -25,9 +25,90 @@
         <p>Loading studies...</p>
       </div>
 
-      <!-- Study Form Modal -->
-      <div v-if="showForm" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] backdrop-blur-sm sm:items-start sm:p-0" @click="closeForm">
-        <div class="bg-white rounded-2xl w-[90%] max-w-[600px] max-h-[90vh] overflow-y-auto shadow-2xl sm:w-full sm:max-w-none sm:rounded-none sm:max-h-screen sm:h-screen" @click.stop>
+      <!-- Studies Grid -->
+      <div v-if="!loading && studies.length > 0" class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6 w-full md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-5 sm:grid-cols-1 sm:gap-4">
+        <div v-for="study in studies" :key="study.id" class="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg w-full max-w-full box-border">
+          <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-start flex-wrap gap-3 md:p-5 sm:p-4 sm:flex-col sm:gap-2">
+            <div class="flex-1 min-w-0">
+              <h3 class="m-0 mb-3 text-xl font-semibold break-words overflow-wrap-anywhere sm:text-lg sm:mb-2">{{ study.title }}</h3>
+              <span 
+                class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide"
+                :class="{
+                  'bg-white/30': study.status === 'planning',
+                  'bg-blue-500/30': study.status === 'recruiting',
+                  'bg-green-500/30': study.status === 'active',
+                  'bg-indigo-500/30': study.status === 'completed',
+                  'bg-red-500/30': study.status === 'cancelled'
+                }"
+              >
+                {{ getStatusLabel(study.status) }}
+              </span>
+            </div>
+            <div class="flex gap-2 flex-shrink-0 sm:w-full sm:justify-end">
+              <button 
+                @click="editStudy(study)" 
+                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
+                title="Edit"
+              >
+                ✏️
+              </button>
+              <button 
+                @click="deleteStudy(study.id)" 
+                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
+                title="Delete"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+          <div class="p-6 md:p-5 sm:p-4 sm:pt-5">
+            <div class="mb-4 sm:mt-0">
+              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
+                <span class="text-gray-600 text-sm">Condition:</span>
+                <span class="text-gray-900 font-semibold">{{ study.condition }}</span>
+              </div>
+              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
+                <span class="text-gray-600 text-sm">Participants:</span>
+                <span class="text-indigo-600 font-semibold text-lg">{{ study.participant_count || 0 }}</span>
+              </div>
+            </div>
+            <div class="flex gap-4 mt-4 pt-4 border-t border-gray-200 sm:flex-col sm:gap-2">
+              <div v-if="study.start_date" class="flex items-center gap-2 flex-1 sm:w-full">
+                <span class="text-xl">📅</span>
+                <div>
+                  <span class="block text-gray-600 text-xs uppercase tracking-wide">Start:</span>
+                  <span class="block text-gray-900 font-semibold text-sm">{{ formatDate(study.start_date) }}</span>
+                </div>
+              </div>
+              <div v-if="study.end_date" class="flex items-center gap-2 flex-1 sm:w-full">
+                <span class="text-xl">🏁</span>
+                <div>
+                  <span class="block text-gray-600 text-xs uppercase tracking-wide">End:</span>
+                  <span class="block text-gray-900 font-semibold text-sm">{{ formatDate(study.end_date) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!loading && studies.length === 0" class="text-center py-16 px-8 bg-white rounded-xl shadow-md sm:py-8 sm:px-4">
+        <div class="text-6xl mb-4 sm:text-5xl">📊</div>
+        <h3 class="m-0 mb-2 text-gray-900 text-2xl font-bold sm:text-xl">No Studies Yet</h3>
+        <p class="text-gray-600 m-0 mb-6">Get started by creating your first clinical study</p>
+        <button 
+          @click="showForm = true" 
+          class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 px-7 py-3.5 rounded-lg cursor-pointer text-base font-semibold flex items-center gap-2 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl mx-auto"
+        >
+          Create First Study
+        </button>
+      </div>
+    </div>
+
+    <!-- Study Form Modal -->
+    <Teleport to="body">
+      <div v-if="showForm" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[1001] backdrop-blur-sm" @click="closeForm">
+        <div class="bg-white rounded-2xl w-[90%] max-w-[600px] max-h-[90vh] overflow-y-auto shadow-2xl" @click.stop>
           <div class="flex justify-between items-center p-6 border-b border-gray-200 sm:p-4 sm:sticky sm:top-0 sm:bg-white sm:z-10">
             <h2 class="m-0 text-gray-900 text-2xl font-bold sm:text-xl">{{ editingStudy ? '✏️ Edit Study' : '➕ Add New Study' }}</h2>
             <button 
@@ -124,86 +205,7 @@
           </form>
         </div>
       </div>
-
-      <!-- Studies Grid -->
-      <div v-if="!loading && studies.length > 0" class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6 w-full md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:gap-5 sm:grid-cols-1 sm:gap-4">
-        <div v-for="study in studies" :key="study.id" class="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg w-full max-w-full box-border">
-          <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex justify-between items-start flex-wrap gap-3 md:p-5 sm:p-4 sm:flex-col sm:gap-2">
-            <div class="flex-1 min-w-0">
-              <h3 class="m-0 mb-3 text-xl font-semibold break-words overflow-wrap-anywhere sm:text-lg sm:mb-2">{{ study.title }}</h3>
-              <span 
-                class="inline-block px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide"
-                :class="{
-                  'bg-white/30': study.status === 'planning',
-                  'bg-blue-500/30': study.status === 'recruiting',
-                  'bg-green-500/30': study.status === 'active',
-                  'bg-indigo-500/30': study.status === 'completed',
-                  'bg-red-500/30': study.status === 'cancelled'
-                }"
-              >
-                {{ getStatusLabel(study.status) }}
-              </span>
-            </div>
-            <div class="flex gap-2 flex-shrink-0 sm:w-full sm:justify-end">
-              <button 
-                @click="editStudy(study)" 
-                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
-                title="Edit"
-              >
-                ✏️
-              </button>
-              <button 
-                @click="deleteStudy(study.id)" 
-                class="bg-white/20 border-0 rounded-md p-2 cursor-pointer text-base transition-all w-8 h-8 flex items-center justify-center hover:bg-white/30 hover:scale-110 sm:min-w-[40px] sm:min-h-[40px]"
-                title="Delete"
-              >
-                🗑️
-              </button>
-            </div>
-          </div>
-          <div class="p-6 md:p-5 sm:p-4 sm:pt-5">
-            <div class="mb-4 sm:mt-0">
-              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
-                <span class="text-gray-600 text-sm">Condition:</span>
-                <span class="text-gray-900 font-semibold">{{ study.condition }}</span>
-              </div>
-              <div class="flex justify-between py-3 border-b border-gray-200 last:border-b-0">
-                <span class="text-gray-600 text-sm">Participants:</span>
-                <span class="text-indigo-600 font-semibold text-lg">{{ study.participant_count || 0 }}</span>
-              </div>
-            </div>
-            <div class="flex gap-4 mt-4 pt-4 border-t border-gray-200 sm:flex-col sm:gap-2">
-              <div v-if="study.start_date" class="flex items-center gap-2 flex-1 sm:w-full">
-                <span class="text-xl">📅</span>
-                <div>
-                  <span class="block text-gray-600 text-xs uppercase tracking-wide">Start:</span>
-                  <span class="block text-gray-900 font-semibold text-sm">{{ formatDate(study.start_date) }}</span>
-                </div>
-              </div>
-              <div v-if="study.end_date" class="flex items-center gap-2 flex-1 sm:w-full">
-                <span class="text-xl">🏁</span>
-                <div>
-                  <span class="block text-gray-600 text-xs uppercase tracking-wide">End:</span>
-                  <span class="block text-gray-900 font-semibold text-sm">{{ formatDate(study.end_date) }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="!loading && studies.length === 0" class="text-center py-16 px-8 bg-white rounded-xl shadow-md sm:py-8 sm:px-4">
-        <div class="text-6xl mb-4 sm:text-5xl">📊</div>
-        <h3 class="m-0 mb-2 text-gray-900 text-2xl font-bold sm:text-xl">No Studies Yet</h3>
-        <p class="text-gray-600 m-0 mb-6">Get started by creating your first clinical study</p>
-        <button 
-          @click="showForm = true" 
-          class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 px-7 py-3.5 rounded-lg cursor-pointer text-base font-semibold flex items-center gap-2 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl mx-auto"
-        >
-          Create First Study
-        </button>
-      </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
