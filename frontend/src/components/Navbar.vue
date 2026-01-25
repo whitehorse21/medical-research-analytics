@@ -68,6 +68,13 @@
 
       <!-- Desktop User Section (visible on lg and above) -->
       <div class="hidden md:flex items-center gap-4 flex-shrink-0">
+        <button 
+          @click="toggleTheme" 
+          class="flex items-center justify-center w-10 h-10 bg-white/15 rounded-xl transition-all hover:bg-white/20 text-white border border-white/20"
+          :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        >
+          <span class="text-xl">{{ isDark ? '☀️' : '🌙' }}</span>
+        </button>
         <div class="flex items-center gap-3 px-4 py-2 bg-white/15 rounded-xl transition-all hover:bg-white/20">
           <div class="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center font-bold text-sm text-white border-2 border-white/30 shadow-md">
             <span>{{ getUserInitials() }}</span>
@@ -132,6 +139,14 @@
         class="md:hidden fixed flex bottom-0 left-0 right-0 bg-gradient-to-r from-indigo-500 to-purple-600 p-4 flex-col gap-4 transform translate-y-full transition-transform duration-300 shadow-lg z-100 border-t border-white/20"
         :class="{ 'translate-y-0': mobileMenuOpen }"
       >
+        <button 
+          @click="toggleTheme" 
+          class="flex items-center justify-center gap-2 bg-white/15 text-white border border-white/20 px-5 py-2.5 rounded-lg cursor-pointer text-sm font-semibold transition-all w-full hover:bg-white/20"
+          :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        >
+          <span class="text-xl">{{ isDark ? '☀️' : '🌙' }}</span>
+          <span class="text-sm">{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+        </button>
         <div class="flex items-center gap-3 px-3 py-3 bg-white/15 rounded-xl w-full justify-center">
           <div class="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center font-bold text-sm text-white border-2 border-white/30 shadow-md">
             <span>{{ getUserInitials() }}</span>
@@ -158,10 +173,12 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from "../utils/api";
+import { useTheme } from "../composables/useTheme";
 
 const router = useRouter();
 const currentUser = computed(() => auth.getCurrentUser());
 const mobileMenuOpen = ref(false);
+const { isDark, toggleTheme } = useTheme();
 
 const getUserInitials = () => {
   if (!currentUser.value?.username) return "U";

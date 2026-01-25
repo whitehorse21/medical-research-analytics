@@ -3,5 +3,14 @@
 </template>
 
 <script setup>
-// App.vue now just renders the router view
+import { onMounted } from 'vue';
+import { useTheme } from './composables/useTheme';
+
+// Ensure theme is initialized when app mounts
+const { initTheme } = useTheme();
+
+onMounted(() => {
+  // Re-initialize theme to ensure it's applied
+  initTheme();
+});
 </script>

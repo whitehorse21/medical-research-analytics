@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  // darkMode is configured in CSS for Tailwind v4
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
